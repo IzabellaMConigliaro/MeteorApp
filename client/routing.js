@@ -42,19 +42,19 @@ var authenticate = function () {
 
     }
 
-    if (!emailVerified(user)) {
+    /*if (!emailVerified(user)) {
 
       console.log('filter: awaiting-verification');
       this.template('awaiting-verification');
       this.layout('layout');
       this.done();
 
-    } else {
+    } else {*/
 
       console.log('filter: done');
       this.layout('layout');
 
-    }
+   // }
   }
 };
 
@@ -64,7 +64,9 @@ Meteor.pages({
   '/signin': 'signin',
   '/start': { to: 'start', nav: 'start', 
          before: [authenticate] },
-  '/secrets': { to: 'secrets', nav: 'secrets', 
+  '/add': { to: 'add', nav: 'add', 
+         before: [authenticate] },
+  '/addStaff': { to: 'addStaff', nav: 'addStaff', 
          before: [authenticate] },
   '/manage': { to: 'manage', nav: 'manage', 
          before: [authenticate] },

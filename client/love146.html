@@ -1,0 +1,230 @@
+<head>
+  <title>#NotANumber-App</title>
+</head>
+
+<body>
+</body>
+
+<template name="layout">
+  {{> header}}
+
+  {{{yield}}}
+
+  <div id="log"></div>
+</template>
+
+<template name="layout_no_header">
+  {{{yield}}}
+
+  <div id="log"></div>
+</template>
+
+<template name="signin">
+  <div class="signin">
+    <div class="login-form">
+      <h1>Sign In</h1>
+      {{loginButtons}}
+    </div>
+
+    <div class="example-users">
+      <p>Normal User: normal@love146.com | test123</p>
+      <p>Facilitator User: facilitator@love146.com | test123</p>
+      <p>Agency Users: agency@love146.com | test123</p>
+      <p>Staff User: staff@love146.com | test123</p>
+    </div>
+  </div>
+</template>
+
+<template name="loading">
+  <h1>Loading...</h1>
+</template>
+
+<template name="awaiting-verification">
+  <h1>Awaiting email verification...</h1>
+</template>
+
+<template name="not_found">
+  <h3>404 - Not found</h3>
+</template>
+
+<template name="invalid-access">
+  <h3>403 Forbidden - Invalid Access</h3>
+</template>
+
+<template name="header">
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="/">#NotANumber-App</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+
+            <li><a href="/start">Start Page</a></li>
+
+            {{#if isInRole 'staff'}}
+            <li><a href="/addStaff">New Staff</a></li>
+            <li><a href="/add">New Agency</a></li>
+            {{/if}}
+
+            {{#if isInRole 'agency'}}
+            <li><a href="/add">New Facilitator</a></li>
+            {{/if}}
+
+            {{#if isInRole 'facilitator'}}
+            <li><a href="/add">New Course</a></li>
+            {{/if}}
+
+            <li class="dropdown pull-right">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{displayName}}<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                {{#if isInRole 'staff'}}
+                <li><a href="/manage">Manage Users</a></li>
+                {{/if}}
+                <li><a class="signout" href="/signout">Sign out</a></li>
+              </ul>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="noteOfTheDay">
+<p>{{note}}</p>
+</template>
+
+<template name="start">
+  <div class="page row">
+    <div class="offset4 span8">
+
+      <p class="note">All logged-in users will see this page in their header nav.</p>
+
+      <h2>Start Page</h2>
+
+      {{> noteOfTheDay}}
+          
+    </div>
+  </div>
+</template>
+
+<template name="add">
+  <div class="add row">
+    <div class="offset4 span8">
+
+      <p class="note">Each role can see a different form.</p>
+
+      {{#if isInRole 'staff'}}
+      <h2>Create Agency</h2>
+      {{> newAgency}}
+      {{/if}}
+
+      {{#if isInRole 'agency'}}
+      <h2>Create Facilitator</h2>
+      {{> newFacilitator}}
+      {{/if}}
+
+      {{#if isInRole 'facilitator'}}
+      <h2>Create Course</h2>
+      
+      {{/if}}
+      <!--<ul>
+      {{#each secrets}}
+        <li><p>{{secret}}</p></li>
+      {{/each}}
+      </ul> -->
+
+
+
+    </div>
+  </div>
+</template>
+
+<template name="addStaff">
+  <div class="addStaff row">
+    <div class="offset4 span8">
+
+      <p class="note">Only Staff can add Staff.</p>
+
+      {{#if isInRole 'staff'}}
+      <h2>Create Staff</h2>
+      {{> newStaff}}
+      {{/if}}
+    </div>
+  </div>
+</template>
+
+<template name="manage">
+  <div class="manage-users row">
+    <div class="offset4 span8">
+
+      <p class="note">Only Admins and those with the 'manage-users' role will see this page in their nav menu.</p>
+
+      <h2>Manage Users</h2>
+
+      <br />
+
+      <h3>Current Users</h3>
+      <ul>
+      {{#each users}}
+      <li>{{email}} - Roles: {{roles}}</li>
+      {{/each}}
+      </ul>
+
+    </div>
+  </div>
+</template>
+
+
+<template name="newAgency">
+
+    <form action="/sign-up" id="newAgencyForm" method="post">
+      <input id="agencyName" name="name" placeholder="Agency Name" type="text" >
+        <br>
+        <input id="agencyEmail" name="email" placeholder="Email Address" type="text" >
+        <input id="agencyEmailConfirm" name="emailConfirm" placeholder="Email Address Confirmation" type="text" ><br>
+        <input id="agencyPassword" name="password" placeholder="Password" type="password">
+        <input id="agencyPasswordConfirm" name="password-confirm" placeholder="Confirm" type="password"><br><br>
+        <input class="btn-submit" type="submit" onClick="this.form.reset()" value="Create Agency">
+    </form>
+    <!-- end #sign-up-form -->
+
+</template>
+
+<template name="newFacilitator">
+
+    <form action="/sign-up" id="newFacilitatorForm" method="post">
+      <input id="facilitatorFirstName" name="fistName" placeholder="First Name" type="text" >
+      <input id="facilitatorLastName" name="lastName" placeholder="Last Name" type="text" >
+        <br>
+        <input id="facilitatorEmail" name="email" placeholder="Email Address" type="text" >
+        <input id="facilitatorEmailConfirm" name="emailConfirm" placeholder="Email Address Confirmation" type="text" ><br>
+        <input id="facilitatorPassword" name="password" placeholder="Password" type="password">
+        <input id="facilitatorPasswordConfirm" name="password-confirm" placeholder="Confirm" type="password"><br><br>
+        <input class="btn-submit" type="submit" onClick="this.form.reset()" value="Create Facilitator">
+    </form>
+    <!-- end #sign-up-form -->
+
+</template>
+
+<template name="newStaff">
+
+    <form action="/sign-up" id="newStaffForm" method="post">
+      <input id="staffFirstName" name="fistName" placeholder="First Name" type="text" >
+      <input id="staffLastName" name="lastName" placeholder="Last Name" type="text" >
+        <br>
+        <input id="staffEmail" name="email" placeholder="Email Address" type="text" >
+        <input id="staffEmailConfirm" name="emailConfirm" placeholder="Email Address Confirmation" type="text" ><br>
+        <input id="staffPassword" name="password" placeholder="Password" type="password">
+        <input id="staffPasswordConfirm" name="password-confirm" placeholder="Confirm" type="password"><br><br>
+        <input class="btn-submit" type="submit" onClick="this.form.reset()" value="Create Staff">
+    </form>
+    <!-- end #sign-up-form -->
+
+</template>

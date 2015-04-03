@@ -27,9 +27,9 @@ Meteor.startup(function () {
   // Create Test Secrets
   //
     
-  if (Meteor.secrets.find().fetch().length === 0) {
-    Meteor.secrets.insert({secret:"ec2 password: apple2"});
-    Meteor.secrets.insert({secret:"domain registration pw: apple3"});
+  if (Meteor.add.find().fetch().length === 0) {
+    Meteor.add.insert({secret:"<p>teste</p>"});
+    Meteor.add.insert({secret:"<br>blabla</br>"});
   }
 
 
@@ -42,10 +42,10 @@ Meteor.startup(function () {
     console.log('Creating users: ');
 
     var users = [
-        {name:"Normal User",email:"normal@example.com",roles:[]},
-        {name:"View-Secrets User",email:"view@example.com",roles:['view-secrets']},
-        {name:"Manage-Users User",email:"manage@example.com",roles:['manage-users']},
-        {name:"Admin User",email:"admin@example.com",roles:['admin']}
+        {name:"Normal User",email:"normal@love146.com",roles:[]},
+        {name:"Facilitator User",email:"facilitator@love146.com",roles:['facilitator']},
+        {name:"Agency User",email:"agency@love146.com",roles:['agency']},
+        {name:"Staff User",email:"staff@love146.com",roles:['staff']}
       ];
 
     _.each(users, function (userData) {
@@ -56,7 +56,7 @@ Meteor.startup(function () {
 
       id = Accounts.createUser({
         email: userData.email,
-        password: "apple1",
+        password: "test123",
         profile: { name: userData.name }
       });
 
@@ -77,7 +77,7 @@ Meteor.startup(function () {
   Accounts.validateNewUser(function (user) {
     var loggedInUser = Meteor.user();
 
-    if (Roles.userIsInRole(loggedInUser, ['admin','manage-users'])) {
+    if (Roles.userIsInRole(loggedInUser, ['staff','agency'])) {
       return true;
     }
 
@@ -93,11 +93,11 @@ Meteor.startup(function () {
 
 
 // Authorized users can view secrets
-Meteor.publish("secrets", function () {
+Meteor.publish("add", function () {
   var user = Meteor.users.findOne({_id:this.userId});
 
-  if (Roles.userIsInRole(user, ["admin","view-secrets"])) {
-    return Meteor.secrets.find();
+  if (Roles.userIsInRole(user, ["staff","agency"])) {
+    return Meteor.add.find();
   }
 
   this.stop();
@@ -108,7 +108,7 @@ Meteor.publish("secrets", function () {
 Meteor.publish("users", function () {
   var user = Meteor.users.findOne({_id:this.userId});
 
-  if (Roles.userIsInRole(user, ["admin","manage-users"])) {
+  if (Roles.userIsInRole(user, ["admin"])) {
     return Meteor.users.find({}, {fields: {emails: 1, profile: 1, roles: 1}});
   } 
 
@@ -116,4 +116,43 @@ Meteor.publish("users", function () {
   return;
 });
 
+
+Meteor.methods({
+  createNewAgency: function(name,email,password,roles){
+   var users = [{name:name,email:email,roles:[roles]},
+               ];
+_.each(users, function (user) {
+ var id;
+id = Accounts.createUser({
+  name:user.name,
+ email: user.email,
+ password: password,
+ profile: { name: user.name }
+ });
+if (user.roles.length > 0) {
+      Roles.addUsersToRoles(id, user.roles);
+     }
+    });
+},
+ createNewUser: function(first_name,last_name,email,password,roles){
+   var users = [{first_name:first_name,last_name:last_name,email:email,roles:[roles]},
+               ];
+_.each(users, function (user) {
+ var id;
+id = Accounts.createUser({
+  first_name: user.first_name,
+  last_name:user.last_name,
+ email: user.email,
+ password: password,
+ profile: { name: user.first_name }
+ });
+if (user.roles.length > 0) {
+      Roles.addUsersToRoles(id, user.roles);
+     }
+    });
+},
+   deleteUser : function(id){       
+  return Meteor.users.remove(id);
+  },
+});
 }());
