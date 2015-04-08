@@ -109,16 +109,51 @@ Template.noteOfTheDay.helpers({
   }
 });
 
-Template.manage.helpers({
+Template.manageAgency.helpers({
   users: function () {
-    return Meteor.users.find();
+    return Meteor.users.find({"roles" : ["agency"]}, {fields: {emails: 1, profile: 1, roles: 1}});
+  },
+  name: function () {
+    return this.profile.name;
   },
   email: function () {
     return this.emails[0].address;
+  }
+});
+
+Template.manageAgency.events({
+  'click a': function(){
+    console.log("You clicked an li element" + this._id);
+}
+});
+
+Template.manageFacilitator.helpers({
+  users: function () {
+    return Meteor.users.find({"roles" : ["facilitator"]}, {fields: {emails: 1, profile: 1, roles: 1}});
   },
-  roles: function () {
-    if (!this.roles) return '<none>';
-    return this.roles.join(',');
+  first_name: function () {
+    return this.profile.first_name;
+  },
+  last_name: function () {
+    return this.profile.last_name;
+  },
+  email: function () {
+    return this.emails[0].address;
+  }
+});
+
+Template.manageStaff.helpers({
+  users: function () {
+    return Meteor.users.find({"roles" : ["staff"]}, {fields: {emails: 1, profile: 1, roles: 1}});
+  },
+  first_name: function () {
+    return this.profile.first_name;
+  },
+  last_name: function () {
+    return this.profile.last_name;
+  },
+  email: function () {
+    return this.emails[0].address;
   }
 });
 

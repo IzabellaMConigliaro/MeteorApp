@@ -108,17 +108,23 @@ Meteor.publish("add", function () {
 Meteor.publish("users", function () {
   var user = Meteor.users.findOne({_id:this.userId});
 
-  if (Roles.userIsInRole(user, ["admin"])) {
+  if (Roles.userIsInRole(user, ["staff"])) {
+   // var users = Roles.getUsersInRole(["staff"]);
     return Meteor.users.find({}, {fields: {emails: 1, profile: 1, roles: 1}});
   } 
 
+  if (Roles.userIsInRole(user, ["agency"])) {
+   // var users = Roles.getUsersInRole(["staff"]);
+    return Meteor.users.find({"roles" : ["facilitator"], "profile.createdBy" : user._id}, {fields: {emails: 1, profile: 1, roles: 1}});
+  } 
   this.stop();
   return;
 });
 
-
 Meteor.methods({
+
   createNewAgency: function(name,email,password,roles){
+  var CurrentUser = Meteor.users.findOne({_id:this.userId});
    var users = [{name:name,email:email,roles:[roles]},
                ];
 _.each(users, function (user) {
@@ -127,7 +133,7 @@ id = Accounts.createUser({
   name:user.name,
  email: user.email,
  password: password,
- profile: { name: user.name }
+ profile: { name: user.name, createdBy: CurrentUser._id }
  });
 if (user.roles.length > 0) {
       Roles.addUsersToRoles(id, user.roles);
@@ -135,6 +141,7 @@ if (user.roles.length > 0) {
     });
 },
  createNewUser: function(first_name,last_name,email,password,roles){
+  var CurrentUser = Meteor.users.findOne({_id:this.userId});
    var users = [{first_name:first_name,last_name:last_name,email:email,roles:[roles]},
                ];
 _.each(users, function (user) {
@@ -144,7 +151,8 @@ id = Accounts.createUser({
   last_name:user.last_name,
  email: user.email,
  password: password,
- profile: { name: user.first_name }
+
+ profile: { first_name: user.first_name, last_name: last_name,  createdBy: CurrentUser._id }
  });
 if (user.roles.length > 0) {
       Roles.addUsersToRoles(id, user.roles);
@@ -153,6 +161,7 @@ if (user.roles.length > 0) {
 },
    deleteUser : function(id){       
   return Meteor.users.remove(id);
-  },
+  }
+
 });
 }());

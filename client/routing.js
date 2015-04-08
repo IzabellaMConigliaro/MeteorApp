@@ -68,7 +68,11 @@ Meteor.pages({
          before: [authenticate] },
   '/addStaff': { to: 'addStaff', nav: 'addStaff', 
          before: [authenticate] },
-  '/manage': { to: 'manage', nav: 'manage', 
+  '/manageAgency': { to: 'manageAgency', nav: 'manageAgency', 
+         before: [authenticate] },
+  '/manageFacilitator': { to: 'manageFacilitator', nav: 'manageFacilitator', 
+         before: [authenticate] },
+  '/manageStaff': { to: 'manageStaff', nav: 'manageStaff', 
          before: [authenticate] },
   '/signout': App.signout,
   '*': 'not_found'

@@ -83,8 +83,16 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{displayName}}<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 {{#if isInRole 'staff'}}
-                <li><a href="/manage">Manage Users</a></li>
+                <li><a href="/manageStaff">Manage Staffs</a></li>
+                <li><a href="/manageAgency">Manage Agencies</a></li>
+                <li><a href="/manageFacilitator">Manage Facilitators</a></li>
                 {{/if}}
+
+                {{#if isInRole 'agency'}}
+                <li><a href="/manageFacilitator">Manage Facilitators</a></li>
+                {{/if}}
+
+
                 <li><a class="signout" href="/signout">Sign out</a></li>
               </ul>
             </li>
@@ -160,20 +168,62 @@
   </div>
 </template>
 
-<template name="manage">
+<template name="manageStaff">
   <div class="manage-users row">
     <div class="offset4 span8">
 
       <p class="note">Only Admins and those with the 'manage-users' role will see this page in their nav menu.</p>
 
-      <h2>Manage Users</h2>
+      <h2>Manage Staffs</h2>
 
       <br />
 
       <h3>Current Users</h3>
       <ul>
       {{#each users}}
-      <li>{{email}} - Roles: {{roles}}</li>
+      <li>{{first_name}} {{last_name}} - {{email}}</li>
+      {{/each}}
+      </ul>
+
+    </div>
+  </div>
+</template>
+
+<template name="manageAgency">
+  <div class="manage-users row">
+    <div class="offset4 span8">
+
+      <p class="note">Only Admins and those with the 'manage-users' role will see this page in their nav menu.</p>
+
+      <h2>Manage Agencies</h2>
+
+      <br />
+
+      <h3>Current Users</h3>
+      <ul>
+      {{#each users}}
+      <li>{{name}} - {{email}}</li><a href='/editAgency'>Edit</a>
+      {{/each}}
+      </ul>
+
+    </div>
+  </div>
+</template>
+
+<template name="manageFacilitator">
+  <div class="manage-users row">
+    <div class="offset4 span8">
+
+      <p class="note">Only Admins and those with the 'manage-users' role will see this page in their nav menu.</p>
+
+      <h2>Manage Facilitators</h2>
+
+      <br />
+
+      <h3>Current Users</h3>
+      <ul>
+      {{#each users}}
+      <li>{{first_name}} {{last_name}} - {{email}}</li>
       {{/each}}
       </ul>
 
@@ -191,7 +241,7 @@
         <input id="agencyEmailConfirm" name="emailConfirm" placeholder="Email Address Confirmation" type="text" ><br>
         <input id="agencyPassword" name="password" placeholder="Password" type="password">
         <input id="agencyPasswordConfirm" name="password-confirm" placeholder="Confirm" type="password"><br><br>
-        <input class="btn-submit" type="submit" onClick="this.form.reset()" value="Create Agency">
+        <input class="btn-submit" type="submit" value="Create Agency">
     </form>
     <!-- end #sign-up-form -->
 
@@ -207,7 +257,7 @@
         <input id="facilitatorEmailConfirm" name="emailConfirm" placeholder="Email Address Confirmation" type="text" ><br>
         <input id="facilitatorPassword" name="password" placeholder="Password" type="password">
         <input id="facilitatorPasswordConfirm" name="password-confirm" placeholder="Confirm" type="password"><br><br>
-        <input class="btn-submit" type="submit" onClick="this.form.reset()" value="Create Facilitator">
+        <input class="btn-submit" type="submit" value="Create Facilitator">
     </form>
     <!-- end #sign-up-form -->
 
@@ -223,7 +273,7 @@
         <input id="staffEmailConfirm" name="emailConfirm" placeholder="Email Address Confirmation" type="text" ><br>
         <input id="staffPassword" name="password" placeholder="Password" type="password">
         <input id="staffPasswordConfirm" name="password-confirm" placeholder="Confirm" type="password"><br><br>
-        <input class="btn-submit" type="submit" onClick="this.form.reset()" value="Create Staff">
+        <input class="btn-submit" type="submit" value="Create Staff">
     </form>
     <!-- end #sign-up-form -->
 
